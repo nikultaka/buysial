@@ -90,9 +90,9 @@
     </div>
 
 
-    {{-- <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
         @csrf
-    </form> --}}
+    </form>
     <script type="text/javascript">
         var BASE_URL = "{{ url('/') }}";
 

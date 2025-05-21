@@ -49,22 +49,24 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:8|max:20',
+        ]);
 
-        if ($request->isMethod('post')) {
+        $credentials = $request->only('email', 'password');
 
-            $this->validate($request, [
-                'email'                 => 'required|email',
-                'password'              => 'required|min:8|max:20|regex:/^[A-Za-z0-9 ]+$/|alpha_dash',
+        if (Auth::attempt($credentials)) {
+            return redirect()->route('admin.dashboard')->with([
+                'message' => 'Successfully logged in.',
+                'type' => 'success',
             ]);
-
-            $credentials = $request->only('email', 'password');
-
-            if (Auth::guard('admin')->attempt($credentials)) {
-                return redirect()->route('admin.dashboard')->with(['message' => 'You are successfully logged in.', 'type' => 'success']);
-            } else {
-                return redirect()->route('admin.login')->with(['message' => 'Email-Address and Password are wrong.', 'type' => 'error']);
-            }
         }
+
+        return redirect()->route('admin.login')->with([
+            'message' => 'Invalid email or password.',
+            'type' => 'error',
+        ]);
     }
 
     public function logout()

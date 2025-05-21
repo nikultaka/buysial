@@ -41,12 +41,7 @@ return [
             'provider' => 'users',
         ],
 
-        'admin' => [ // Custom guard for staff
-            'driver' => 'session',
-            'provider' => 'users', // Link to the 'staff' provider
-        ],
     ],
-
     /*
     |--------------------------------------------------------------------------
     | User Providers
@@ -64,23 +59,13 @@ return [
     |
     */
 
+    
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\User::class,
         ],
-
-        'admin' => [ // Custom provider for staff
-            'driver' => 'database', // or 'eloquent' if using a Staff model
-            'table' => App\Models\User::class, // Table name
-        ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Resetting Passwords

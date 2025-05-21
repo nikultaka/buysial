@@ -16,7 +16,11 @@ Route::any('/check/login', [LoginController::class, 'login']);
 
 Route::any('/admin/logout', [LoginController::class, 'logout'])->name('admin.logout');
 
-Route::middleware(['auth.admin'])->prefix('admin')->group(function () {
+// Route::middleware(['auth.admin'])->prefix('admin')->group(function () {
 
+//     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+// });
+
+Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 });
