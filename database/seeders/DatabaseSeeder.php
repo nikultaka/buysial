@@ -16,7 +16,10 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         $this->call([
-            SuperAdminSeeder::class,
+            UserSeeder::class,
+            CountriesSeeder::class,
+            StatesSeeder::class,
+            CitySeeder::class,
         ]);
     }
 }
