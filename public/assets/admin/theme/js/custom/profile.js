@@ -38,16 +38,28 @@ $(document).ready(function () {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                success: function (data) {
+                success: function(data) {
                     $('#loader-container').hide();
 
-                    if (data.status == 'success') {
-                        toastr.success(data.message);
+                    if (data.status === 'success') {
+                        toastr.success(data?.message);
+
+                        if (data.user) {
+                            $('#profileForm input[name="name"]').val(data?.user?.name);
+                            $('#profileForm input[name="email"]').val(data?.user?.email);
+                            $('#profileForm input[name="password"]').val('');
+                        }
+
+                        // If logout flag is true, redirect after short delay
+                        if (data.logout) {
+                            setTimeout(function() {
+                                window.location.href =  BASE_URL + '/admin/logout';
+                            }, 1000);
+                        }
                     } else {
-                        toastr.error(data.message || 'Update failed');
+                        toastr.error(data?.message || 'Update failed');
                     }
 
-                    $("#profileForm")[0].reset();
                     $("#profileForm").validate().resetForm();
                     $("#profileForm").find('.error').removeClass('error');
                 },
