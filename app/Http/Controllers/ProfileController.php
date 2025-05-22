@@ -34,23 +34,35 @@ class ProfileController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $userId = Auth::id();
+        $user = Auth::user();
+
+        $logoutRequired = false;
 
         $updateData = [
             'name' => $request->name,
-            'email' => $request->email,
         ];
+
+        if ($request->email !== $user->email) {
+            $updateData['email'] = $request->email;
+            $logoutRequired = true;
+        }
 
         if (!empty($request->password)) {
             $updateData['password'] = Hash::make($request->password);
+            $logoutRequired = true;
         }
 
-        $updated = User::where('id', $userId)->update($updateData);
+        $updated = User::where('id', $user->id)->update($updateData);
 
         if ($updated) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Profile updated successfully.'
+                'message' => 'Profile updated successfully.',
+                'user' => [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                ],
+                'logout' => $logoutRequired
             ]);
         } else {
             return response()->json([
@@ -59,4 +71,5 @@ class ProfileController extends Controller
             ], 400);
         }
     }
+
 }
