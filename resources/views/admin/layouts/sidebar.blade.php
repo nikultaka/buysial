@@ -34,6 +34,15 @@
                 <i class="menu-icon tf-icons bx bxs-dashboard"></i>
                 <div data-i18n="Analytics">Dashboard</div>
             </a>
+
+        </li>
+        <!-- User Profile -->
+        <li class="menu-item {{ $currentRouteName == 'admin.profile' ? 'active' : '' }}">
+            <a href="{{ route('admin.profile') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bxs-user-circle"></i>
+                <div data-i18n="User Profile">User Profile</div>
+            </a>
+        </li>
     </ul>
 </aside>
 
