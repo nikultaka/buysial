@@ -1,9 +1,13 @@
 <?php
 
+use App\Helpers\GlobalHelper;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\UserController;
+
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\ProfileController;
 
@@ -31,4 +35,23 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile');
     Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('admin.profile.update');
+
+    Route::post('/profile/remove-logo', [ProfileController::class, 'removeLogo'])->name('admin.profile.removeLogo');
+
+
+    Route::get('/users', [UserController::class, 'index'])->name('admin.users');
+    Route::post('/users/save', [UserController::class, 'save'])->name('admin.users.save');
+    Route::post('/userList', [UserController::class, 'userList'])->name('admin.users.userList');
+
+
+    Route::get('/get-states/{country_id}', function ($country_id) {
+        return response()->json(GlobalHelper::getStatesByCountry($country_id));
+    });
+    Route::get('/get-cities/{state_id}', function ($state_id) {
+        return response()->json(GlobalHelper::getCitiesByState($state_id));
+    });
+
+
+});
+
 });

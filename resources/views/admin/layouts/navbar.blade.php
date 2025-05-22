@@ -18,9 +18,12 @@
                   <div class="avatar avatar-online bg-dark rounded-circle">
                   </div>
                 </div>
+                @php
+                    $user = Auth::user();
+                @endphp
                 <div class="flex-grow-1">
-                  <span class="fw-semibold d-block">John Doe</span>
-                  <small class="text-muted">Admin</small>
+                  <span class="fw-semibold d-block">{{ isset($user->name) ? $user->name : "" }}</span>
+                  <small class="text-muted">{{ isset($user->role) ? $user->role : "User" }}</small>
                 </div>
               </div>
             </a>

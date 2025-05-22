@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    attachRemoveLogoHandler();
     var validationRules = {
         name: "required",
         email: {
@@ -27,7 +28,6 @@ $(document).ready(function () {
         submitHandler: function () {
             var formData = new FormData($("#profileForm")[0]);
             $('#loader-container').show();
-            console.log("BASE_URL::",  BASE_URL + '/admin/profile/update');
             $.ajax({
                 url: BASE_URL + '/admin/profile/update',
                 type: "POST",
@@ -38,7 +38,7 @@ $(document).ready(function () {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                success: function(data) {
+                success: function (data) {
                     $('#loader-container').hide();
 
                     if (data.status === 'success') {
@@ -48,12 +48,34 @@ $(document).ready(function () {
                             $('#profileForm input[name="name"]').val(data?.user?.name);
                             $('#profileForm input[name="email"]').val(data?.user?.email);
                             $('#profileForm input[name="password"]').val('');
+
+                            // ✅ Update logo preview if exists
+                            if (data.user.logo) {
+                                let logoPreviewHtml = `
+                                    <div class="mb-2 position-relative" id="logo-preview">
+                                        <img src="${BASE_URL + '/' + data.user.logo}" alt="User Logo" width="100">
+                                        <button 
+                                            type="button" 
+                                            class="btn-close position-absolute top-0 start-100 translate-middle" 
+                                            aria-label="Remove" 
+                                            id="remove-logo-btn" 
+                                            style="background-color: red; opacity: 0.8;"
+                                            data-logo="${data.user.logo}">
+                                        </button>
+                                    </div>
+                                `;
+
+                                // Remove file input and append preview
+                                $('#logo').hide(); // hide input
+                                $('#logo').after(logoPreviewHtml);
+                                attachRemoveLogoHandler(); // Re-attach event handler
+                            }
                         }
 
                         // If logout flag is true, redirect after short delay
                         if (data.logout) {
-                            setTimeout(function() {
-                                window.location.href =  BASE_URL + '/admin/logout';
+                            setTimeout(function () {
+                                window.location.href = BASE_URL + '/admin/logout';
                             }, 1000);
                         }
                     } else {
@@ -76,4 +98,71 @@ $(document).ready(function () {
             });
         }
     });
+
+    // $('#remove-logo-btn').on('click', function () {
+    //     if (!confirm('Are you sure you want to remove the logo?')) return;
+
+    //     let logoPath = $(this).data('logo');
+
+    //     $('#loader-container').show();
+
+    //     $.ajax({
+    //         url: BASE_URL + '/admin/profile/remove-logo',
+    //         type: "POST",
+    //         data: {
+    //             _token: $('meta[name="csrf-token"]').attr('content'),
+    //             logo: logoPath
+    //         },
+    //         success: function (response) {
+    //             $('#loader-container').hide();
+
+    //             if (response.status === 'success') {
+    //                 toastr.success(response.message);
+    //                 $('#logo-preview').remove();
+    //                 $('#logo').show();
+    //             } else {
+    //                 toastr.error(response.message || 'Failed to remove logo.');
+    //             }
+    //         },
+    //         error: function () {
+    //             $('#loader-container').hide();
+    //             toastr.error('An error occurred while removing the logo.');
+    //         }
+    //     });
+    // });
+
+    function attachRemoveLogoHandler() {
+        $('#remove-logo-btn').off('click').on('click', function () {
+            if (!confirm('Are you sure you want to remove the logo?')) return;
+
+            let logoPath = $(this).data('logo');
+
+            $('#loader-container').show();
+
+            $.ajax({
+                url: BASE_URL + '/admin/profile/remove-logo',
+                type: "POST",
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    logo: logoPath
+                },
+                success: function (response) {
+                    $('#loader-container').hide();
+
+                    if (response.status === 'success') {
+                        toastr.success(response.message);
+
+                        $('#logo-preview').remove();
+                        $('#logo').val('').show(); // Show input again
+                    } else {
+                        toastr.error(response.message || 'Failed to remove logo.');
+                    }
+                },
+                error: function () {
+                    $('#loader-container').hide();
+                    toastr.error('An error occurred while removing the logo.');
+                }
+            });
+        });
+    }
 });
