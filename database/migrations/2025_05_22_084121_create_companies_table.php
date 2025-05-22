@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('company_country');
             $table->string('company_website')->nullable();
             $table->string('status')->default(0);
+            $table->integer('isdeleted')->default(0);
             $table->timestamps();
         });
     }
