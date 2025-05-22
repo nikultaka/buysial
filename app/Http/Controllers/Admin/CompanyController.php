@@ -51,6 +51,7 @@ class CompanyController extends Controller
             'company_state' => 'required',
             'company_zip' => 'required',
             'company_country' => 'required',
+            'company_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
         ];
 
         $validator = Validator::make($fields, $rules);
@@ -60,12 +61,30 @@ class CompanyController extends Controller
             return response()->json($response);
         }
 
-        // If you have logo file input
+        // Handle image upload
         if ($request->hasFile('company_logo')) {
             $logo = $request->file('company_logo');
             $logoName = time() . '_' . uniqid() . '.' . $logo->getClientOriginalExtension();
-            $logo->move(public_path('uploads/companies'), $logoName);
+            
+            // Create directory if it doesn't exist
+            $uploadPath = public_path('uploads/companies');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+            
+            $logo->move($uploadPath, $logoName);
             $fields['company_logo'] = $logoName;
+
+            // Delete old image if exists
+            if ($hid) {
+                $oldCompany = Company::find($hid);
+                if ($oldCompany && $oldCompany->company_logo) {
+                    $oldImagePath = $uploadPath . '/' . $oldCompany->company_logo;
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
+                    }
+                }
+            }
         }
 
         if ($hid) {
