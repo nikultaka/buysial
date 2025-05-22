@@ -36,11 +36,18 @@
             </a>
 
         </li>
-        <!-- User Profile -->
+        <!-- Profile -->
         <li class="menu-item {{ $currentRouteName == 'admin.profile' ? 'active' : '' }}">
             <a href="{{ route('admin.profile') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-user-circle"></i>
                 <div data-i18n="User Profile">User Profile</div>
+            </a>
+        </li>
+        <!-- Users -->
+        <li class="menu-item {{ $currentRouteName == 'admin.users' ? 'active' : '' }}">
+            <a href="{{ route('admin.users') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bxs-group"></i>
+                <div data-i18n="Users">Users</div>
             </a>
         </li>
     </ul>
