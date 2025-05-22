@@ -1,12 +1,12 @@
 @extends('admin.layouts.index')
-@section('admin-title', 'User Profile')
+@section('admin-title', 'Profile')
 
 @section('admin-content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row">
             <div class="col-lg-12 mb-4 order-0">
                 <div class="card">
-                    <h5 class="card-header">User Profile</h5>
+                    <h5 class="card-header">Profile</h5>
                     <div class="card-body">
                         <form id="profileForm">
                             @csrf

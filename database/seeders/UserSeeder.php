@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
                 'state' => '12',
                 'city' => '19',
                 'zip' => '380008',
-                'role' => 'super_admin',
+                'role' => 'Super Admin',
             ]
         );
     }
