@@ -72,7 +72,13 @@
         <li class="menu-item {{ $currentRouteName == 'admin.banner' ? 'active' : '' }}">
             <a href="{{ route('admin.banner') }}" class="menu-link">
                 <div data-i18n="Basic">Banner</div>
+        <!-- User Profile -->
+        <li class="menu-item {{ $currentRouteName == 'admin.company' ? 'active' : '' }}">
+            <a href="{{ route('admin.company') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bxs-user-circle"></i>
+                <div data-i18n="Company Management">Company Management</div>
+
             </a>
         </li>
     </ul>
-</li> --}}
+</aside>
