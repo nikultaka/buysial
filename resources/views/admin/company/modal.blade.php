@@ -11,12 +11,28 @@
                     enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" id="hid" name="hid" value="">
-
+                    <div id="oldimgbox" style="display: none;">
+                        <label>Current Logo</label>
+                        <div id="imgbox">
+                        </div>
+                    </div>
+                    <div id="priview_image_title" style="display: none;">
+                        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                            <label for="img_privew" style="margin-right: 8px; margin-bottom: 0;">Preview Image</label>
+                            <i class="fa fa-xmark fa-fw" id="close_icone"
+                                style="color: red; cursor: pointer; font-size: 1.2rem;" title="Remove Image"></i>
+                        </div>
+                        <div>
+                            <img id="img_privew" src="#" alt="Image Preview"
+                                style="height: 120px; width: auto; margin-top: 10px; border-radius: 5px;" />
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <label for="company_logo" class="form-label">Company Logo</label>
-                        <input type="file" class="form-control" id="company_logo" name="company_logo">
+                        <input type="file" class="form-control" id="company_logo" name="company_logo"
+                            accept="image/*">
+                        <small class="text-muted">Allowed formats: JPG, JPEG, PNG, GIF, WEBP. Max size: 5MB</small>
                     </div>
-
                     <div class="mb-3">
                         <label for="company_name" class="form-label">Company Name</label>
                         <input type="text" class="form-control" id="company_name" name="company_name" required>
@@ -59,7 +75,8 @@
 
                     <div class="mb-3">
                         <label for="company_country" class="form-label">Country</label>
-                        <input type="text" class="form-control" id="company_country" name="company_country" required>
+                        <input type="text" class="form-control" id="company_country" name="company_country"
+                            required>
                     </div>
 
                     <div class="mb-3">

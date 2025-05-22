@@ -4,7 +4,7 @@ $(document).ready(function () {
         $('#companymodal').modal('show');
         $("#modal_title").html("");
         $("#modal_title").html("Add Company");
-        $("#img").attr("required", true);
+        $("#company_logo").attr("required", true);
         $("#modal_title").html("Add Company");
     });
 
@@ -68,11 +68,38 @@ $(document).ready(function () {
         ],
     });
 
+    // Add custom validation method for file size
+    $.validator.addMethod('filesize', function(value, element, param) {
+        return this.optional(element) || (element.files[0].size <= param);
+    }, 'File size must be less than {0} bytes');
+
+    // Add image preview functionality
+    $("#company_logo").change(function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $("#img_privew").attr("src", e.target.result);
+                $("#priview_image_title").show();
+                $("#oldimgbox").hide();
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Close preview image
+    $("#close_icone").click(function() {
+        $("#company_logo").val("");
+        $("#img_privew").attr("src", "");
+        $("#priview_image_title").hide();
+        $("#oldimgbox").show();
+    });
 
     $('form[id="companyForm"]').validate({
         rules: {
             company_logo: {
-                extension: "jpg|jpeg|png|gif|svg|webp",
+                extension: "jpg|jpeg|png|gif|webp",
+                filesize: 5242880 // 5MB in bytes
             },
             company_name: {
                 required: true
@@ -108,11 +135,12 @@ $(document).ready(function () {
             },
             status: {
                 required: true
-            }
+            },
         },
         messages: {
             company_logo: {
-                extension: "Only image files are allowed."
+                extension: "Only image files are allowed.",
+                filesize: "File size should be less than 5MB."
             },
             company_name: {
                 required: "Company name is required."
@@ -148,7 +176,7 @@ $(document).ready(function () {
             },
             status: {
                 required: "Please select status."
-            }
+            },
         },
         submitHandler: function () {
             var formData = new FormData($("#companyForm")[0]);
@@ -217,7 +245,6 @@ $(document).ready(function () {
 
     $(document).on("click", "#companyEdit", function () {
         let id = $(this).data("id");
-        console.log('id:', id)
         $.ajax({
             type: "GET",
             url: BASE_URL + "/admin/company/edit",
@@ -239,7 +266,15 @@ $(document).ready(function () {
                     $("#company_zip").val(data.company_zip);
                     $("#company_country").val(data.company_country);
                     $("#company_website").val(data.company_website);
-                    $("#status").val(data.status == 'Active' ? 1 : 0); // if using dropdown
+                    $("#status").val(data.status == 'Active' ? 1 : 0);
+
+                    // Handle existing image
+                    if (data.company_logo) {
+                        $("#oldimgbox").show();
+                        $("#imgbox").html(`<img src="${BASE_URL}/uploads/companies/${data.company_logo}" alt="Company Logo" style="height: 120px; width: auto; margin-top: 10px; border-radius: 5px;">`);
+                    } else {
+                        $("#oldimgbox").hide();
+                    }
                 } else {
                     toastr.error(response.message);
                 }
