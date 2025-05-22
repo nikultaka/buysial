@@ -50,34 +50,11 @@
                 <div data-i18n="Users">Users</div>
             </a>
         </li>
-    </ul>
-</aside>
 
-
-{{-- <li class="menu-item">
-    <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons bx bxs-image"></i>
-        <div data-i18n="Layouts">Banner</div>
-    </a>
-
-    <ul class="menu-sub">
-        <li class="menu-item {{ $currentRouteName == 'admin.banner_category' ? 'active' : '' }}">
-            <a href="{{ route('admin.banner_category') }}" class="menu-link">
-                <div>Banner Category</div>
-            </a>
-        </li>
-    </ul>
-
-    <ul class="menu-sub">
-        <li class="menu-item {{ $currentRouteName == 'admin.banner' ? 'active' : '' }}">
-            <a href="{{ route('admin.banner') }}" class="menu-link">
-                <div data-i18n="Basic">Banner</div>
-        <!-- User Profile -->
         <li class="menu-item {{ $currentRouteName == 'admin.company' ? 'active' : '' }}">
             <a href="{{ route('admin.company') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-user-circle"></i>
                 <div data-i18n="Company Management">Company Management</div>
-
             </a>
         </li>
     </ul>
