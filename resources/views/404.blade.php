@@ -11,6 +11,7 @@
             flex: 1 0 0%;
             margin-left: 12%;
             margin-top: 5%;
+
         }
         #color {
             font-weight: bold;
