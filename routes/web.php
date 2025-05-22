@@ -9,7 +9,7 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 
 use App\Http\Controllers\Admin\CompanyController;
-use App\Http\Controllers\ProfileController;
+
 
 Auth::routes();
 
@@ -51,7 +51,5 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         return response()->json(GlobalHelper::getCitiesByState($state_id));
     });
 
-
-});
 
 });
