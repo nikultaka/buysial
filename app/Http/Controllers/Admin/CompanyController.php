@@ -92,7 +92,7 @@ class CompanyController extends Controller
     {
         $companydata = DB::table('companies')
             ->select('companies.*')
-            ->where('companies.status', 1)
+            ->where('companies.isdeleted', 0)
             ->get();
 
         return Datatables::of($companydata)
@@ -115,5 +115,49 @@ class CompanyController extends Controller
             ->rawColumns(['action', 'status'])
             ->make(true);
         exit;
+    }
+
+    public function delete(Request $request)
+    {
+        $post = $request->post();
+        $id = isset($post['id']) ? $post['id'] : "";
+        $response['status']  = 0;
+        $response['message']  = "Somthing Goes Wrong!";
+
+        if (is_numeric($id)) {
+            $delete_company = Company::where('id', $id)->update(['isdeleted' => 1]);
+            if ($delete_company) {
+                $response['status'] = 1;
+                $response['message'] = 'Company deleted successfully.';
+            } else {
+                $response['message'] = 'something went wrong company not deleted.';
+            }
+        }
+        echo json_encode($response);
+        exit;
+    }
+
+    public function edit(Request $request)
+    {
+        $id = $request->query('id');
+        // Initialize response
+        $response = [
+            'status' => 0,
+            'message' => 'Something went wrong!'
+        ];
+
+        // Check if ID is valid
+        if (is_numeric($id)) {
+            $companydata = Company::where('id', $id)->first();
+            if ($companydata) {
+                $response = [
+                    'status' => 1,
+                    'companydata' => $companydata
+                ];
+            }
+        }
+
+        return response()->json($response);
+        exit; // Proper JSON response
     }
 }

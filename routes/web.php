@@ -25,6 +25,8 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/company', [CompanyController::class, 'index'])->name('admin.company');
     Route::post('/company/save', [CompanyController::class, 'save'])->name('admin.company.create');
     Route::post('/companylist', [CompanyController::class, 'list'])->name('admin.company.list');
+    Route::post('/company/delete', [CompanyController::class, 'delete'])->name('admin.company.delete');
+    Route::get('/company/edit', [CompanyController::class, 'edit'])->name('admin.company.edit');
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile');

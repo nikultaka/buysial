@@ -180,4 +180,70 @@ $(document).ready(function () {
         }
     });
 
+
+    $(document).on("click", "#companyDelete", function () {
+        let id = $(this).data("id");
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/company/delete",
+                    data: {
+                        _token: $("[name='_token']").val(),
+                        id: id,
+                    },
+                    success: function (response) {
+                        var data = JSON.parse(response);
+                        if (data.status == 1) {
+                            $('#companyTable    ').DataTable().ajax.reload();
+                            toastr.success(data.message);
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+
+    $(document).on("click", "#companyEdit", function () {
+        let id = $(this).data("id");
+        console.log('id:', id)
+        $.ajax({
+            type: "GET",
+            url: BASE_URL + "/admin/company/edit",
+            data: {
+                id: id
+            },
+            success: function (response) {
+                if (response?.status === 1) {
+                    const data = response.companydata;
+                    $('#companymodal').modal('show');
+                    $("#hid").val(data.id);
+                    $("#company_name").val(data.company_name);
+                    $("#company_code").val(data.company_code);
+                    $("#company_email").val(data.company_email);
+                    $("#company_phone").val(data.company_phone);
+                    $("#company_address").val(data.company_address);
+                    $("#company_city").val(data.company_city);
+                    $("#company_state").val(data.company_state);
+                    $("#company_zip").val(data.company_zip);
+                    $("#company_country").val(data.company_country);
+                    $("#company_website").val(data.company_website);
+                    $("#status").val(data.status == 'Active' ? 1 : 0); // if using dropdown
+                } else {
+                    toastr.error(response.message);
+                }
+            }
+        });
+    });
 });
