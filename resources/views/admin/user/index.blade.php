@@ -7,25 +7,29 @@
             <div class="col-6">
                 <h4 class="fw-bold">Users</h4>
             </div>
-            <div class="col-6 text-end">
-                <button class="btn btn-primary" id="add-user-btn">
-                    <i class="bx bx-plus me-1"></i> Add User
-                </button>
-            </div>
+           
         </div>
 
-        <div class="card">
-            <h5 class="card-header">User List</h5>
+        <div class="card p-2">
+            <div class="row gy-3">
+                <div class="col-lg-6 col-md-6">
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <button type="button" class="btn btn-primary float-end mt-2 ms-2 mb-4" id="add-user-btn">
+                        Add
+                    </button>
+                </div>
+            </div>
+
             <div class="table-responsive text-nowrap">
-                <table id="userTable" class="table table-bordered">
-                    <thead>
-                        <tr>
+                <table class="table pt-2 " id="userTable">
+                    <thead class="table-light  mt-3">
+                        <tr class="text-nowrap">
                             <th>Name</th>
                             <th>Role</th>
                             <th>Email</th>
                             <th>Phone Number</th>
                             <th>Address</th>
-                            <th>Birth Date</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -85,7 +89,7 @@
             };
 
             var validationMessages = {
-                name: "Please enter the staff name",
+                name: "Please enter the user name",
                 "roles[]": "Please select at least one role",
                 address: "Please enter the address",
                 country: "Please select a country",
@@ -150,8 +154,7 @@
                             $("#userForm")[0].reset();
                             $("#userForm").validate().resetForm();
                             $("#userForm").find('.error').removeClass('error');
-                            $('#StaffTable').DataTable().ajax.reload();
-                            $('#per_details_tab').load(window.location.href + ' #per_details_tab');
+                            $('#userTable').DataTable().ajax.reload();
                         }
                     });
                 },
@@ -234,13 +237,113 @@
                         data: "address",
                     },
                     {
-                        data: "date_of_birth",
-                    },
-                    {
                         data: "action",
                         orderable: false
                     },
                 ],
+            });
+
+            $(document).on('click', '#userEdit', function() {
+                var id = $(this).data("id");
+                $.ajax({
+                    type: "GET",
+                    url: "/admin/users/edit",
+                    data: {
+                        _token: $("[name='_token']").val(),
+                        id: id,
+                    },
+                    success: function(response) {
+                        if (response.status == 1) {
+                            if (response?.user_data) {
+                                var userdata = response.user_data;
+                                console.log("userdata:::", userdata)
+                                $('#userModal').modal('show');
+                                $("#userModalLabel").html("Edit User");
+
+                                // Set form values
+                                $('#hid').val(userdata?.id);
+                                $('#name').val(userdata?.name);
+                                $('#address').val(userdata?.address);
+                                $('#phone').val(userdata?.phone);
+                                $('#email').val(userdata?.email);
+                                $("#zip").val(userdata?.zip);
+                                $("#role").val(userdata?.role);
+                                $('#dob').val(userdata?.date_of_birth);
+                                $('#company').val(userdata?.company_id);
+                                $('#userTable').DataTable().ajax.reload();
+                                
+                                $('#country').val(userdata?.country).change();
+                                $('#country').val(userdata?.country).change();
+                                // Load states based on selected country
+                                $.ajax({
+                                    url: 'get-states/' + userdata.country,
+                                    type: 'GET',
+                                    dataType: 'json',
+                                    success: function(states) {
+                                        $('#state').html('<option value="">Select State</option>');
+                                        $.each(states, function(index, state) {
+                                            $('#state').append('<option value="' + state.id + '">' + state.name + '</option>');
+                                        });
+
+                                        // Set the state value and trigger change to load cities
+                                        $('#state').val(userdata.state).change();
+
+                                        // Load cities based on selected state
+                                        $.ajax({
+                                            url: 'get-cities/' + userdata.state,
+                                            type: 'GET',
+                                            dataType: 'json',
+                                            success: function(cities) {
+                                                $('#city').html('<option value="">Select City</option>');
+                                                $.each(cities, function(index, city) {
+                                                    $('#city').append('<option value="' + city.id + '">' + city.name + '</option>');
+                                                });
+
+                                                // Set the city value once the cities are loaded
+                                                $('#city').val(userdata.city);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    },
+                });
+            });
+
+
+            
+            $(document).on("click", "#userDelete", function () {
+                let id = $(this).data("id");
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/admin/users/delete",
+                            data: {
+                                _token: $("[name='_token']").val(),
+                                id: id,
+                            },
+                            success: function (response) {
+                                var data = JSON.parse(response);
+                                if (data.status == 1) {
+                                    $('#userTable').DataTable().ajax.reload();
+                                    toastr.success(data.message);
+                                } else {
+                                    toastr.error(data.message);
+                                }
+                            }
+                        });
+                    }
+                });
             });
         });
     </script>
