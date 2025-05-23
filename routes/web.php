@@ -41,7 +41,9 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 
     Route::get('/users', [UserController::class, 'index'])->name('admin.users');
     Route::post('/users/save', [UserController::class, 'save'])->name('admin.users.save');
-    Route::post('/userList', [UserController::class, 'userList'])->name('admin.users.userList');
+    Route::post('/users/userList', [UserController::class, 'userList'])->name('admin.users.userList');
+    Route::get('/users/edit', [UserController::class, 'edit'])->name('admin.users.edit');
+    Route::post('/users/delete', [UserController::class, 'delete'])->name('admin.users.delete');
 
 
     Route::get('/get-states/{country_id}', function ($country_id) {

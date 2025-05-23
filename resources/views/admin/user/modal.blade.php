@@ -12,32 +12,33 @@
                 <div class="modal-body row">
                     {{-- Name --}}
                     <div class="mb-3 col-md-6">
+                        <input type="hidden" id="hid" name="hid" value="">
                         <label class="form-label">Name <span class="text-danger">*</span></label>
-                        <input type="text" name="name" class="form-control" required>
+                        <input type="text" name="name" id="name" class="form-control" required>
                     </div>
 
                     {{-- Email --}}
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Email <span class="text-danger">*</span></label>
-                        <input type="email" name="email" class="form-control" required>
+                        <input type="email" name="email" id="email" class="form-control" required>
                     </div>
 
                     {{-- Phone --}}
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Phone <span class="text-danger">*</span></label>
-                        <input type="text" name="phone" class="form-control" required>
+                        <input type="text" name="phone" id="phone" class="form-control" required>
                     </div>
 
                     {{-- Password --}}
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Password <span class="text-danger">*</span></label>
-                        <input type="password" name="password" class="form-control" required>
+                        <input type="password" name="password" id="password" class="form-control" required>
                     </div>
 
                     {{-- Address --}}
                     <div class="mb-3 col-md-12">
                         <label class="form-label">Address</label>
-                        <textarea name="address" class="form-control" rows="2"></textarea>
+                        <textarea name="address" class="form-control" id="address" rows="2"></textarea>
                     </div>
 
                     {{-- Country --}}
@@ -56,7 +57,6 @@
                         <label class="form-label">State</label>
                         <select name="state" id="state" class="form-select" required>
                             <option value="">Select State</option>
-                            {{-- Dynamic states --}}
                         </select>
                     </div>
 
@@ -69,22 +69,21 @@
 
                     <div class="mb-3 col-md-4">
                         <label class="form-label">ZIP Code</label>
-                        <input type="text" name="zip" class="form-control">
+                        <input type="text" name="zip" id="zip" class="form-control">
                     </div>
 
                     <div class="mb-3 col-md-4">
                         <label class="form-label">Role</label>
-                        <select name="role" class="form-select" required>
+                        <select name="role" id="role" class="form-select" required>
                             <option value="">Select Role</option>
-                            <option value="SUPER-ADMIN">SUPER ADMIN</option>
-                            <option value="ADMIN">ADMIN</option>
-
+                            <option value="Super Admin">Super Admin</option>
+                            <option value="Admin">Admin</option>
                         </select>
                     </div>
 
                     <div class="mb-3 col-md-4">
                         <label class="form-label">Company</label>
-                        <select name="company" class="form-select" required>
+                        <select name="company" id="company" class="form-select" required>
                             <option value="">Select Company</option>
                             <option value="1">Palladium Hub</option>
                             <option value="2">Platly Soft</option>
@@ -93,12 +92,12 @@
 
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Date of Birth</label>
-                        <input type="date" name="dob" class="form-control">
+                        <input type="date" name="dob" id="dob" class="form-control">
                     </div>
 
                     <div class="mb-3 col-md-6">
                         <label class="form-label">Status</label>
-                        <select name="status" class="form-select">
+                        <select name="status" id="status" class="form-select">
                             <option value="1">Active</option>
                             <option value="0">Inactive</option>
                         </select>
@@ -107,7 +106,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancel-user-btn">Cancel</button>
-                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </div>
         </form>

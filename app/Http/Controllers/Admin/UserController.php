@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\DataTables;
 
 class UserController extends Controller
 {
@@ -136,7 +137,7 @@ class UserController extends Controller
                     $response['status'] = 1;
                     $response['message'] = "User added successfully!";
                 } else {
-                    $response['message'] = "Failed to add Staff!";
+                    $response['message'] = "Failed to add Users!";
                 }
             }
         } else {
@@ -149,51 +150,84 @@ class UserController extends Controller
 
     public function userList()
     {
-        // $users_data = User::select('staff.*','countries.name as country_name', 'states.name as state_name','cities.name as city_name')
-        //     ->leftJoin('countries', 'staff.country', '=', 'countries.id')
-        //     ->leftJoin('states', 'staff.state', '=', 'states.id')
-        //     ->leftJoin('cities', 'staff.city', '=', 'cities.id')
-        //     ->where('staff.isdeleted', '!=', 1)
-        //     ->groupBy('staff.id') 
-        //     ->get();
+        $users_data = User::select('users.*','countries.name as country_name', 'states.name as state_name','cities.name as city_name')
+            ->leftJoin('countries', 'users.country', '=', 'countries.id')
+            ->leftJoin('states', 'users.state', '=', 'states.id')
+            ->leftJoin('cities', 'users.city', '=', 'cities.id')
+            ->where('users.isdeleted', '!=', 1)
+            ->groupBy('users.id') 
+            ->get();
+
+        return DataTables::of($users_data)
+            ->addIndexColumn()
+            ->addColumn('address', function ($row) {
+                $address = $row->address ?? 'N/A';
+                $city = $row->city_name ?? 'N/A';
+                $state = $row->state_name ?? 'N/A';
+                $country = $row->country_name ?? 'N/A';
+                return "$address, $city, $state, $country";
+            })
+            ->addColumn('roles', function ($row) {
+                return $row->role;
+            })
+
+            ->addColumn('action', function ($row) {
+                $action = '<div class="dropdown dropup d-flex justify-content-center">
+                                <button class="btn p-0" type="button" id="cardOpt3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3" style="">
+                                <a class="dropdown-item" href="javascript:void(0);" data-id="' . $row->id . '" id="userEdit"><i class="bx bx-edit-alt me-1"></i> Edit</a>
+                                <a class="dropdown-item" href="javascript:void(0);" data-id="' . $row->id . '" id="userDelete"><i class="bx bx-trash me-1"></i> Delete</a>
+                                </div>
+                            </div>';
+
+                return $action;
+            })
+            ->rawColumns(['address', 'action', 'roles'])
+            ->make(true);
+    }
 
 
-        // return Datatables::of($users_data)
-        //     ->addIndexColumn()
-        //     ->addColumn('address', function ($row) {
-        //         $address = $row->address ?? 'N/A';
-        //         $city = $row->city_name ?? 'N/A';
-        //         $state = $row->state_name ?? 'N/A';
-        //         $country = $row->country_name ?? 'N/A';
-        //         return "$address, $city, $state, $country";
-        //     })
-        //     ->addColumn('roles', function ($row) {
-        //         return $row->role_names;
-        //     })
+    public function edit(Request $request)
+    {
+        $id = $request->query('id');
+        $response = [
+            'status' => 0,
+            'message' => 'Something went wrong!'
+        ];
 
-        //     ->addColumn('action', function ($row) {
-        //         $action = '<div class="dropdown dropup d-flex justify-content-center">
-        //                     <button class="btn p-0" type="button" id="cardOpt3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        //                        <i class="bx bx-dots-vertical-rounded"></i>
-        //                      </button>
-        //                      <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
-        //                          <a class="teamroleDelete dropdown-item" href="javascript:void(0);" data-id="' . $row->id . '">
-        //                              <i class="bx bx-trash me-1"></i> Delete
-        //                          </a>
-        //                      </div>
-        //                    </div>
-        //                    <div class="actions text-center">
-        //                         <a class="btn btn-sm bg-success-light" data-toggle="modal" href="javascript:void(0);" id="edit_staff" data-id="' . $row->id . '">
-        //                            <i class="fe fe-pencil"></i>
-        //                        </a>
-        //                        <a data-toggle="modal" class="btn btn-sm bg-danger-light" href="javascript:void(0);" id="delete_staff" data-id="' . $row->id . '">
-        //                            <i class="fe fe-trash"></i>
-        //                        </a>
-        //                    </div>';
+        if (is_numeric($id)) {
+            $user_data = User::where('id', $id)->first();
+            if ($user_data) {
+                $response = [
+                    'status' => 1,
+                    'user_data' => $user_data
+                ];
+            }
+        }
 
-        //         return $action;
-        //     })
-        //     ->rawColumns(['address', 'action', 'roles']) // Ensure HTML is not escaped
-        //     ->make(true);
+        return response()->json($response);
+        exit;
+    }
+
+    public function delete(Request $request)
+    {
+        $post = $request->post();
+        $id = isset($post['id']) ? $post['id'] : "";
+        $response['status']  = 0;
+        $response['message']  = "Somthing Goes Wrong!";
+
+        if (is_numeric($id)) {
+            $delete_users = User::where('id', $id)->update(['isdeleted' => 1]);
+            if ($delete_users) {
+                $response['status'] = 1;
+                $response['message'] = 'Users deleted successfully.';
+            } else {
+                $response['message'] = 'something went wrong users not deleted.';
+            }
+        }
+        echo json_encode($response);
+        exit;
     }
 }

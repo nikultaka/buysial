@@ -40,7 +40,7 @@
         <li class="menu-item {{ $currentRouteName == 'admin.profile' ? 'active' : '' }}">
             <a href="{{ route('admin.profile') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-user-circle"></i>
-                <div data-i18n="User Profile">User Profile</div>
+                <div data-i18n="Profile">Profile</div>
             </a>
         </li>
         <!-- Users -->
@@ -53,7 +53,7 @@
 
         <li class="menu-item {{ $currentRouteName == 'admin.company' ? 'active' : '' }}">
             <a href="{{ route('admin.company') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bxs-user-circle"></i>
+                <i class="menu-icon tf-icons bx bxs-buildings"></i>
                 <div data-i18n="Company Management">Company Management</div>
             </a>
         </li>
