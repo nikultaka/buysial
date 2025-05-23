@@ -14,12 +14,26 @@
 
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
-        <a href="index.html" class="app-brand-link">
+        {{-- <a href="index.html" class="app-brand-link">
             <span class="app-brand-logo demo">
                 <img src="{{ asset('assets/admin/theme/img/logo/logo.png') }}" alt="Company Logo">
             </span>
-        </a>
+        </a> --}}
 
+        <a href="{{ route('admin.dashboard') }}" class="app-brand-link">
+            @php
+                $logo = get_setting('logo');
+            @endphp
+            <span class="app-brand-logo demo" style="display: inline-block; width: 190px; height: 70px;">
+                @if ($logo && file_exists(public_path('logos/' . $logo)))
+                    <img src="{{ asset('logos/' . $logo) }}" alt="Company Logo"
+                        style="width: 100%; height: 100%; object-fit: contain;">
+                @else
+                    <img src="{{ asset('assets/admin/theme/img/logo/logo.png') }}" alt="Company Logo"
+                        style="width: 100%; height: 100%; object-fit: contain;">
+                @endif
+            </span>
+        </a>
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
             <i class="bx bx-chevron-left bx-sm align-middle"></i>
         </a>

@@ -4,10 +4,18 @@
       <i class="bx bx-menu bx-sm"></i>
     </a>
   </div>
+      @php
+        $user = Auth::user();
+      @endphp
       <ul class="navbar-nav flex-row align-items-center ms-auto">
       <li class="nav-item navbar-dropdown dropdown-user dropdown">
         <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
           <div class="avatar avatar-online bg-dark rounded-circle">
+            @if ($user->logo && file_exists(public_path($user->logo)))
+                  <img src="{{ asset($user->logo) }}" style="object-fit: cover" alt="User Logo" class="">
+              @else
+                  <img src="{{ asset('assets/admin/theme/img/1.png') }}" alt="" class="w-px-40 h-auto rounded-circle">
+              @endif
           </div>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
@@ -16,11 +24,16 @@
               <div class="d-flex">
                 <div class="flex-shrink-0 me-3">
                   <div class="avatar avatar-online bg-dark rounded-circle">
+                    <div class="avatar avatar-online bg-dark rounded-circle">
+                        @if ($user->logo && file_exists(public_path($user->logo)))
+                            <img src="{{ asset($user->logo) }}" style="object-fit: cover" alt="User Logo" class="">
+                        @else
+                            <img src="{{ asset('assets/admin/theme/img/1.png') }}" alt="" class="w-px-40 h-auto rounded-circle">
+                        @endif
+                    </div>
                   </div>
                 </div>
-                @php
-                    $user = Auth::user();
-                @endphp
+               
                 <div class="flex-grow-1">
                   <span class="fw-semibold d-block">{{ isset($user->name) ? $user->name : "" }}</span>
                   <small class="text-muted">{{ isset($user->role) ? $user->role : "User" }}</small>
