@@ -20,7 +20,7 @@
                         <div style="display: flex; align-items: center; margin-bottom: 8px;">
                             <label for="img_privew" style="margin-right: 8px; margin-bottom: 0;">Preview Image</label>
                             <i class="fa fa-xmark fa-fw" id="close_icone"
-                                style="color: red; cursor: pointer; font-size: 1.2rem;" title="Remove Image"></i>
+                                style="color: red; cursor: pointer; font-size: 1.2rem;" title="Remove Image">x</i>
                         </div>
                         <div>
                             <img id="img_privew" src="#" alt="Image Preview"
