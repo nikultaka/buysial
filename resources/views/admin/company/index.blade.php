@@ -14,23 +14,25 @@
                     </button>
                 </div>
             </div>
-            <div class="table-responsive text-nowrap">
-                <table class="table pt-2 " id="companyTable">
-                    <thead class="table-light  mt-3">
-                        <tr class="text-nowrap">
-                            <th>ID</th>
-                            <th>Company Name</th>
-                            <th>Company Code</th>
-                            <th>Company Email</th>
-                            <th>Company Phone</th>
-                            <th>Company Address</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+            <div class="card-body">
+                <div class="table-responsive text-nowrap">
+                    <table class="table table-striped table-hover align-middle text-nowrap mb-0 pt-2" id="companyTable">
+                        <thead class="table-light  mt-3">
+                            <tr class="text-nowrap">
+                                <th>ID</th>
+                                <th>Company Name</th>
+                                <th>Company Code</th>
+                                <th>Company Email</th>
+                                <th>Company Phone</th>
+                                <th>Company Address</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

@@ -69,16 +69,16 @@ $(document).ready(function () {
     });
 
     // Add custom validation method for file size
-    $.validator.addMethod('filesize', function(value, element, param) {
+    $.validator.addMethod('filesize', function (value, element, param) {
         return this.optional(element) || (element.files[0].size <= param);
     }, 'File size must be less than {0} bytes');
 
     // Add image preview functionality
-    $("#company_logo").change(function() {
+    $("#company_logo").change(function () {
         const file = this.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 $("#img_privew").attr("src", e.target.result);
                 $("#priview_image_title").show();
                 $("#oldimgbox").hide();
@@ -88,7 +88,7 @@ $(document).ready(function () {
     });
 
     // Close preview image
-    $("#close_icone").click(function() {
+    $("#close_icone").click(function () {
         $("#company_logo").val("");
         $("#img_privew").attr("src", "");
         $("#priview_image_title").hide();
@@ -209,6 +209,51 @@ $(document).ready(function () {
     });
 
 
+    // For dropdowns
+    $('#company_country').on('change', function () {
+        var countryId = $(this).val();
+        $('#company_state').html('<option value="">Loading...</option>');
+        $('#company_city').html('<option value="">Select City</option>');
+
+        if (countryId) {
+            $.ajax({
+                url: BASE_URL + '/admin/get-states/' + countryId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (states) {
+                    $('#company_state').html('<option value="">Select State</option>');
+                    $.each(states, function (index, state) {
+                        $('#company_state').append('<option value="' + state?.id + '">' + state?.name + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('#company_state').html('<option value="">Select State</option>');
+        }
+    });
+
+    $('#company_state').on('change', function () {
+        var stateId = $(this).val();
+        $('#company_city').html('<option value="">Loading...</option>'); // Show loading text
+
+        if (stateId) {
+            $.ajax({
+                url: 'get-cities/' + stateId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (cities) {
+                    $('#company_city').html('<option value="">Select City</option>');
+                    $.each(cities, function (index, city) {
+                        $('#company_city').append('<option value="' + city.id + '">' + city.name + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('#company_city').html('<option value="">Select City</option>'); // Reset city if no state selected
+        }
+    });
+
+
     $(document).on("click", "#companyDelete", function () {
         let id = $(this).data("id");
         Swal.fire({
@@ -261,12 +306,42 @@ $(document).ready(function () {
                     $("#company_email").val(data.company_email);
                     $("#company_phone").val(data.company_phone);
                     $("#company_address").val(data.company_address);
-                    $("#company_city").val(data.company_city);
-                    $("#company_state").val(data.company_state);
                     $("#company_zip").val(data.company_zip);
-                    $("#company_country").val(data.company_country);
                     $("#company_website").val(data.company_website);
                     $("#status").val(data.status == 'Active' ? 1 : 0);
+                    $('#company_country').val(data.company_country).change();
+                    $('#company_country').val(data.company_country).change();
+                    // Load states based on selected country
+                    $.ajax({
+                        url: 'get-states/' + data.company_country,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (states) {
+                            $('#company_state').html('<option value="">Select State</option>');
+                            $.each(states, function (index, state) {
+                                $('#company_state').append('<option value="' + state.id + '">' + state.name + '</option>');
+                            });
+
+                            // Set the state value and trigger change to load cities
+                            $('#company_state').val(data.company_state).change();
+
+                            // Load cities based on selected state
+                            $.ajax({
+                                url: 'get-cities/' + data.company_state,
+                                type: 'GET',
+                                dataType: 'json',
+                                success: function (cities) {
+                                    $('#company_city').html('<option value="">Select City</option>');
+                                    $.each(cities, function (index, city) {
+                                        $('#company_city').append('<option value="' + city.id + '">' + city.name + '</option>');
+                                    });
+
+                                    // Set the city value once the cities are loaded
+                                    $('#company_city').val(data.company_city);
+                                }
+                            });
+                        }
+                    });
 
                     // Handle existing image
                     if (data.company_logo) {

@@ -58,25 +58,36 @@
                         <input type="text" class="form-control" id="company_address" name="company_address" required>
                     </div>
 
+
                     <div class="mb-3">
-                        <label for="company_city" class="form-label">City</label>
-                        <input type="text" class="form-control" id="company_city" name="company_city" required>
+
+                        <label class="form-label">Country</label>
+                        <select name="company_country" id="company_country" class="form-select" required>
+                            <option value="">Select Country</option>
+                            @foreach ($countries as $country)
+                                <option value="{{ $country->id }}">{{ isset($country->name) ? $country->name : '' }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="mb-3">
-                        <label for="company_state" class="form-label">State</label>
-                        <input type="text" class="form-control" id="company_state" name="company_state" required>
+                        <label class="form-label">State</label>
+                        <select name="company_state" id="company_state" class="form-select" required>
+                            <option value="">Select State</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">City</label>
+                        <select name="company_city" id="company_city" class="form-select" required>
+                            <option value="">Select City</option>
+                        </select>
                     </div>
 
                     <div class="mb-3">
                         <label for="company_zip" class="form-label">Zip</label>
                         <input type="text" class="form-control" id="company_zip" name="company_zip" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="company_country" class="form-label">Country</label>
-                        <input type="text" class="form-control" id="company_country" name="company_country"
-                            required>
                     </div>
 
                     <div class="mb-3">
