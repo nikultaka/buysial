@@ -60,15 +60,15 @@
 
 
         <li class="menu-item 
-            {{ in_array($currentRouteName, ['admin.general_setting', 'admin.profile']) ? 'active open' : '' }}">
+            {{ in_array($currentRouteName, ['admin.general_settings', 'admin.profile']) ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bxs-cog"></i>
                 <div data-i18n="Settings">Settings</div>
             </a>
 
             <ul class="menu-sub">
-                <li class="menu-item {{ $currentRouteName == 'admin.general_setting' ? 'active' : '' }}">
-                    <a href="" class="menu-link">
+                <li class="menu-item {{ $currentRouteName == 'admin.general_settings' ? 'active' : '' }}">
+                    <a href="{{ route('admin.general_settings') }}" class="menu-link">
                         <div data-i18n="General Setting">General Setting</div>
                     </a>
                 </li>
