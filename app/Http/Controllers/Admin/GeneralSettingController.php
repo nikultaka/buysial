@@ -54,7 +54,9 @@ class GeneralSettingController extends Controller
         if ($setting && File::exists(public_path('favicons/' . $setting->value))) {
             File::delete(public_path('favicons/' . $setting->value));
         }
-        $setting?->delete();
+        if ($setting) {
+            Setting::where('value', $setting->value)->update(['value' => '']);
+        }
         return response()->json(['status' => 'success', 'message' => 'Favicon removed']);
     }
 }
