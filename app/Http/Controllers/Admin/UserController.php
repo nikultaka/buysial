@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helpers\GlobalHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,8 +19,9 @@ class UserController extends Controller
         $countries = GlobalHelper::getAllCountries();
         $cities = GlobalHelper::getAllCities();
         $states = GlobalHelper::getAllStates();
-    
-        return view('admin.user.index', compact('countries', 'cities','states')); 
+        $companies = Company::all();
+        $roles = GlobalHelper::getRoles();
+        return view('admin.user.index', compact('countries', 'cities','states', 'companies', 'roles')); 
     }
 
     public function save(Request $request)

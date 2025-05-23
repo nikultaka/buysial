@@ -44,6 +44,11 @@
 @section('admin-footer')
     <script>
         $(document).ready(function() {
+            $('#userModal').on('hidden.bs.modal', function () {
+                $('#hid').val("");
+                $("#userForm")[0].reset();
+            });
+            
             $('#add-user-btn').on('click', function() {
                 $('#userModal').modal('show');
             });

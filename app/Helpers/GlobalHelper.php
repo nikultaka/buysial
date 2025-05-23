@@ -42,4 +42,18 @@ class GlobalHelper
             ->where('state_id', $state_id)
             ->get();
     }
+
+
+    public const ROLES = [
+        'admin' => 'Admin',
+        'sales-man' => 'Sales Man',
+        'driver' => 'Driver',
+        'customer' => 'Customer',
+        'user' => 'User',
+    ];
+
+    public static function getRoles()
+    {
+        return self::ROLES;
+    }
 }
