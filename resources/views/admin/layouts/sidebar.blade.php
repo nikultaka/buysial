@@ -37,12 +37,12 @@
 
         </li>
         <!-- Profile -->
-        <li class="menu-item {{ $currentRouteName == 'admin.profile' ? 'active' : '' }}">
+        {{-- <li class="menu-item {{ $currentRouteName == 'admin.profile' ? 'active' : '' }}">
             <a href="{{ route('admin.profile') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-user-circle"></i>
                 <div data-i18n="Profile">Profile</div>
             </a>
-        </li>
+        </li> --}}
         <!-- Users -->
         <li class="menu-item {{ $currentRouteName == 'admin.users' ? 'active' : '' }}">
             <a href="{{ route('admin.users') }}" class="menu-link">
@@ -56,6 +56,28 @@
                 <i class="menu-icon tf-icons bx bxs-buildings"></i>
                 <div data-i18n="Company Management">Company Management</div>
             </a>
+        </li>
+
+
+        <li class="menu-item 
+            {{ in_array($currentRouteName, ['admin.general_setting', 'admin.profile']) ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bxs-cog"></i>
+                <div data-i18n="Settings">Settings</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item {{ $currentRouteName == 'admin.general_setting' ? 'active' : '' }}">
+                    <a href="" class="menu-link">
+                        <div data-i18n="General Setting">General Setting</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ $currentRouteName == 'admin.profile' ? 'active' : '' }}">
+                    <a href="{{ route('admin.profile') }}" class="menu-link">
+                        <div data-i18n="Profile Setting">Profile Setting</div>
+                    </a>
+                </li>
+            </ul>
         </li>
     </ul>
 </aside>

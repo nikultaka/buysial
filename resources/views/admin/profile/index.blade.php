@@ -12,7 +12,7 @@
                             @csrf
 
                             <div class="mb-3" id="logo-section">
-                                <label for="logo" class="form-label">Logo</label>
+                                <label for="logo" class="form-label">Profile Image</label>
                                 @if (!empty($logo))
                                     <div class="position-relative d-inline-block mb-2" id="logo-preview">
                                         <img src="{{ asset($logo) }}" alt="User Logo" width="100" class="border rounded">
@@ -22,6 +22,12 @@
                                 @else
                                     <input type="file" class="form-control" name="logo" id="logo" accept="image/*">
                                 @endif
+                            </div>
+                            <div class="row mb-3">
+                                <label for="img_privew" id="priview_image_title">Priview Image</label>
+                                <div class="col-sm-10">
+                                    <img id="img_privew" src="#" alt="" height="120px" width="auto" class="mt-2" />
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="name" class="form-label">Full Name</label>
