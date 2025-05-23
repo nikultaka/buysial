@@ -7,6 +7,9 @@
 /storage/pail
 /vendor
 public/uploads/companies/
+public/favicons/
+public/logos/
+public/uploads/users/
 .history
 .env
 .env.backup
