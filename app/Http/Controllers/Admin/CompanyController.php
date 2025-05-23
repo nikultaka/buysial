@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\GlobalHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use Illuminate\Http\Request;
@@ -14,7 +15,11 @@ class CompanyController extends Controller
 {
     public function index()
     {
-        return view('admin.company.index');
+        $countries = GlobalHelper::getAllCountries();
+        $cities = GlobalHelper::getAllCities();
+        $states = GlobalHelper::getAllStates();
+
+        return view('admin.company.index', compact('countries', 'cities', 'states'));
     }
 
     public function save(Request $request)
@@ -65,13 +70,13 @@ class CompanyController extends Controller
         if ($request->hasFile('company_logo')) {
             $logo = $request->file('company_logo');
             $logoName = time() . '_' . uniqid() . '.' . $logo->getClientOriginalExtension();
-            
+
             // Create directory if it doesn't exist
             $uploadPath = public_path('uploads/companies');
             if (!file_exists($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
             }
-            
+
             $logo->move($uploadPath, $logoName);
             $fields['company_logo'] = $logoName;
 
