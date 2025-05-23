@@ -13,15 +13,16 @@
 
                             <div class="mb-3" id="logo-section">
                                 <label for="logo" class="form-label">Profile Image</label>
-                                @if (!empty($logo))
-                                    <div class="position-relative d-inline-block mb-2" id="logo-preview">
+                                <div class="position-relative mb-2" id="logo-preview"
+                                 @if (empty($logo)) style="display: none;" @endif>
+                                    @if (!empty($logo))
                                         <img src="{{ asset($logo) }}" alt="User Logo" width="100" class="border rounded">
-                                        <button type="button" class="btn-close position-absolute top-0 start-100 translate-middle" aria-label="Remove" id="remove-logo-btn" style="background-color: red; opacity: 0.8;" 
-                                        data-logo="{{ isset($logo) ? $logo : "" }}"></button>
-                                    </div>
-                                @else
-                                    <input type="file" class="form-control" name="logo" id="logo" accept="image/*">
-                                @endif
+                                        <button type="button" class="btn-close position-absolute top-0 start-100 translate-middle" aria-label="Remove"
+                                            id="remove-logo-btn" style="background-color: red; opacity: 0.8;" data-logo="{{ $logo }}"></button>
+                                    @endif
+                                </div>
+
+                                <input type="file" class="form-control mt-2" name="logo" id="logo" accept="image/*" @if (!empty($logo)) style="display: none;" @endif>
                             </div>
                             <div class="row mb-3">
                                 <label for="img_privew" id="priview_image_title">Priview Image</label>

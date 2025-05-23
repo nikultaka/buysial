@@ -1,47 +1,39 @@
 $(document).ready(function () {
     attachRemoveLogoHandler();
 
-    $("#img_privew").hide();
-    $("#priview_image_title").hide();
+    if (!$('#img_privew').attr('src') || $('#img_privew').attr('src') === '#') {
+        $("#img_privew").hide();
+        $("#priview_image_title").hide();
+    }
 
-    // ✅ Fix: Get logo input using jQuery
-    $('#logo').on('change', function (evt) {
+    $('#logo').on('change', function () {
         const [file] = this.files;
         if (file) {
-            $("#img_privew").show();
+            $("#img_privew").attr('src', URL.createObjectURL(file)).css({ height: '120px', width: 'auto' }).show();
             $("#priview_image_title").show();
-            $("#img_privew").attr('src', URL.createObjectURL(file));
         }
     });
 
-    var validationRules = {
-        name: "required",
-        email: {
-            required: true,
-            email: true
-        },
-        password: {
-            minlength: 6
-        }
-    };
-
-    var validationMessages = {
-        name: "This field is required",
-        email: {
-            required: "This field is required",
-            email: "Please enter a valid email"
-        },
-        password: {
-            minlength: "Password must be at least 6 characters"
-        }
-    };
-
     $('form[id="profileForm"]').validate({
-        rules: validationRules,
-        messages: validationMessages,
+        rules: {
+            name: "required",
+            email: { required: true, email: true },
+            password: { minlength: 6 }
+        },
+        messages: {
+            name: "This field is required",
+            email: {
+                required: "This field is required",
+                email: "Please enter a valid email"
+            },
+            password: {
+                minlength: "Password must be at least 6 characters"
+            }
+        },
         submitHandler: function () {
-            var formData = new FormData($("#profileForm")[0]);
+            const formData = new FormData($("#profileForm")[0]);
             $('#loader-container').show();
+
             $.ajax({
                 url: BASE_URL + '/admin/profile/update',
                 type: "POST",
@@ -63,36 +55,30 @@ $(document).ready(function () {
                             $('#profileForm input[name="email"]').val(data?.user?.email);
                             $('#profileForm input[name="password"]').val('');
 
-                            // ✅ Update logo preview
-                            if (data.user.logo) {
-                                $("#priview_image_title").hide();
-                                $("#img_privew").hide(); // Hide temporary preview
+                            // Reset file input and hide preview
+                            $('#logo').val('').hide();
+                            $("#img_privew").hide();
+                            $("#priview_image_title").hide();
 
-                                let logoPreviewHtml = `
-                                    <div class="mb-2 position-relative" id="logo-preview">
-                                        <img src="${BASE_URL + '/' + data.user.logo}" alt="User Logo" width="100">
-                                        <button 
-                                            type="button" 
-                                            class="btn-close position-absolute top-0 start-100 translate-middle" 
-                                            aria-label="Remove" 
-                                            id="remove-logo-btn" 
-                                            style="background-color: red; opacity: 0.8;"
-                                            data-logo="${data.user.logo}">
+                            if (data.user.logo) {
+                                $('#logo-preview').remove(); // clear old preview
+
+                                const html = `
+                                    <div class="position-relative mb-2" id="logo-preview">
+                                        <img src="${BASE_URL + '/' + data.user.logo}" alt="User Logo" width="100" class="border rounded">
+                                        <button type="button" class="btn-close position-absolute top-0 start-100 translate-middle"
+                                            aria-label="Remove" id="remove-logo-btn"
+                                            style="background-color: red; opacity: 0.8;" data-logo="${data.user.logo}">
                                         </button>
                                     </div>
                                 `;
-
-                                $('#logo').val('').hide(); // Clear and hide input
-                                $('#logo-preview').remove(); // Remove any existing preview
-                                $('#logo').after(logoPreviewHtml);
-                                attachRemoveLogoHandler(); // Re-attach handler
+                                $('#logo').after(html);
+                                attachRemoveLogoHandler();
                             }
                         }
 
                         if (data.logout) {
-                            setTimeout(function () {
-                                window.location.href = BASE_URL + '/admin/logout';
-                            }, 1000);
+                            setTimeout(() => window.location.href = BASE_URL + '/admin/logout', 1000);
                         }
                     } else {
                         toastr.error(data?.message || 'Update failed');
@@ -104,8 +90,7 @@ $(document).ready(function () {
                 error: function (xhr) {
                     $('#loader-container').hide();
                     if (xhr.status === 422) {
-                        let errorMsg = Object.values(xhr.responseJSON.errors).map(
-                            e => e[0]).join('<br>');
+                        let errorMsg = Object.values(xhr.responseJSON.errors).map(e => e[0]).join('<br>');
                         toastr.error(errorMsg);
                     } else {
                         toastr.error("An unexpected error occurred.");
@@ -116,35 +101,45 @@ $(document).ready(function () {
     });
 
     function attachRemoveLogoHandler() {
-        $(document).off('click', '#remove-logo-btn').on('click', '#remove-logo-btn', function () {
-            if (!confirm('Are you sure you want to remove the logo?')) return;
+       $(document).off('click', '#remove-logo-btn').on('click', '#remove-logo-btn', function () {
+            const logoPath = $(this).data('logo');
 
-            let logoPath = $(this).data('logo');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to remove the profile image?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, remove it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#loader-container').show();
 
-            $('#loader-container').show();
-
-            $.ajax({
-                url: BASE_URL + '/admin/profile/remove-logo',
-                type: "POST",
-                data: {
-                    _token: $('meta[name="csrf-token"]').attr('content'),
-                    logo: logoPath
-                },
-                success: function (response) {
-                    $('#loader-container').hide();
-
-                    if (response.status === 'success') {
-                        toastr.success(response.message);
-
-                        $('#logo-preview').remove();
-                        $('#logo').val('').show(); // Show and reset input
-                    } else {
-                        toastr.error(response.message || 'Failed to remove logo.');
-                    }
-                },
-                error: function () {
-                    $('#loader-container').hide();
-                    toastr.error('An error occurred while removing the logo.');
+                    $.ajax({
+                        url: BASE_URL + '/admin/profile/remove-logo',
+                        type: "POST",
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content'),
+                            logo: logoPath
+                        },
+                        success: function (response) {
+                            $('#loader-container').hide();
+                            if (response.status === 'success') {
+                                toastr.success(response.message);
+                                $('#logo-preview').remove();
+                                $('#logo').val('').show();
+                                $("#img_privew").hide();
+                                $("#priview_image_title").hide();
+                            } else {
+                                toastr.error(response.message || 'Failed to remove logo.');
+                            }
+                        },
+                        error: function () {
+                            $('#loader-container').hide();
+                            toastr.error('An error occurred while removing the logo.');
+                        }
+                    });
                 }
             });
         });
